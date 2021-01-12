@@ -69,3 +69,10 @@ class DataFrame:
 
     return DataFrame.from_array(new_arr, self.columns)
 
+  @classmethod
+  def from_csv(cls, path_to_csv, header=True):
+    with open(path_to_csv, "r") as file:
+      str_arr = [i.split(',  ') for i in file.read().split('\n')]
+      columns = str_arr[0][0].split(', ')
+      str_arr = [row for row in str_arr[1:] if row != ['']]
+    return cls.from_array(str_arr, columns)

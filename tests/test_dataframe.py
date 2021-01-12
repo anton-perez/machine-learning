@@ -84,3 +84,23 @@ assert df.order_by('firstname', ascending=False).to_array() == [['Sylvia', 'Mend
 ['Charles', 'Trapp', 17],
 ['Anna', 'Smith', 13]]
 print('PASSED')
+
+path_to_datasets = '/home/runner/machine-learning/datasets/'
+filename = 'airtravel.csv' 
+filepath = path_to_datasets + filename
+df = DataFrame.from_csv(filepath, header=True)
+print('Testing classmethod from_csv...')
+assert df.columns == ['"Month"', '"1958"', '"1959"', '"1960"']
+assert df.to_array() == [['"JAN"',  '340',  '360',  '417'],
+['"FEB"',  '318',  '342',  '391'],
+['"MAR"',  '362',  '406',  '419'],
+['"APR"',  '348',  '396',  '461'],
+['"MAY"',  '363',  '420',  '472'],
+['"JUN"',  '435',  '472',  '535'],
+['"JUL"',  '491',  '548',  '622'],
+['"AUG"',  '505',  '559',  '606'],
+['"SEP"',  '404',  '463',  '508'],
+['"OCT"',  '359',  '407',  '461'],
+['"NOV"',  '310',  '362',  '390'],
+['"DEC"',  '337',  '405',  '432']]
+print('PASSED')
