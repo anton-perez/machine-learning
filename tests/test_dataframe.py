@@ -104,3 +104,34 @@ assert df.to_array() == [['"JAN"',  '340',  '360',  '417'],
 ['"NOV"',  '310',  '362',  '390'],
 ['"DEC"',  '337',  '405',  '432']]
 print('PASSED')
+
+df = DataFrame.from_array(
+    [[0, 0, 1], 
+    [1, 0, 2], 
+    [2, 0, 4], 
+    [4, 0, 8], 
+    [6, 0, 9], 
+    [0, 2, 2], 
+    [0, 4, 5], 
+    [0, 6, 7], 
+    [0, 8, 6],
+    [2, 2, 0],
+    [3, 4, 0]],
+    columns = ['beef', 'pb', 'rating']
+)
+
+df = df.create_interaction_terms('beef', 'pb')
+print('Testing method create_interaction_terms...')
+assert df.columns == ['beef', 'pb', 'rating', 'beef * pb']
+assert df.to_array() == [[0, 0, 1, 0], 
+    [1, 0, 2, 0], 
+    [2, 0, 4, 0], 
+    [4, 0, 8, 0], 
+    [6, 0, 9, 0], 
+    [0, 2, 2, 0], 
+    [0, 4, 5, 0], 
+    [0, 6, 7, 0], 
+    [0, 8, 6, 0],
+    [2, 2, 0, 4],
+    [3, 4, 0, 12]]
+print('PASSED')

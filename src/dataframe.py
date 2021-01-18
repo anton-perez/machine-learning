@@ -20,14 +20,14 @@ class DataFrame:
     return DataFrame(new_dict, selected_columns)
 
   def select_rows(self, row_indices):
-    new_dict = self.data_dict
+    new_dict = self.data_dict.copy()
     for key in new_dict:
       new_dict[key] = [self.data_dict[key][i] for i in row_indices]
 
     return DataFrame(new_dict, self.columns)
   
   def apply(self, key, function):
-    new_dict = self.data_dict
+    new_dict = self.data_dict.copy()
     old_list = new_dict[key]
     new_dict[key] = [function(i) for i in old_list]
     return DataFrame(new_dict, self.columns)
@@ -76,3 +76,12 @@ class DataFrame:
       columns = str_arr[0][0].split(', ')
       str_arr = [row for row in str_arr[1:] if row != ['']]
     return cls.from_array(str_arr, columns)
+
+  def create_interaction_terms(self, col_1, col_2):
+    new_dict = self.data_dict.copy()
+    new_columns = [i for i in self.columns]
+    new_key = col_1 + ' * ' + col_2
+    new_columns.append(new_key)
+    new_dict[new_key] = [new_dict[col_1][i]*new_dict[col_2][i] for i in range(len(new_dict[col_1]))]
+
+    return DataFrame(new_dict, new_columns)
