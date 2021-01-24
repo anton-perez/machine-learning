@@ -1,6 +1,7 @@
 import sys
 sys.path.append('src')
 from linear_regressor import LinearRegressor
+from logistic_regressor import LogisticRegressor
 from matrix import Matrix
 from dataframe import DataFrame
 
@@ -53,6 +54,46 @@ print('regressor with interaction terms')
 print(regressor.coefficients)
 print(regressor.predict({
     'beef': 5,
+    'pb': 0,
+    'beef * pb': 0
+    }))
+
+print(regressor.predict({
+    'beef': 5,
+    'pb': 5,
+    'beef * pb': 25
+    }))
+
+df = DataFrame.from_array(
+    [[0, 0, 1], 
+    [1, 0, 2], 
+    [2, 0, 4], 
+    [4, 0, 8], 
+    [6, 0, 9], 
+    [0, 2, 2], 
+    [0, 4, 5], 
+    [0, 6, 7], 
+    [0, 8, 6],
+    [2, 2, 0.1],
+    [3, 4, 0.1]],
+    columns = ['beef', 'pb', 'rating']
+)
+
+df = df.create_interaction_terms('beef', 'pb')
+
+regressor = LogisticRegressor(df, 'rating', 10)
+
+print('Logistic regressor with interaction terms')
+
+print(regressor.coefficients)
+print(regressor.predict({
+    'beef': 5,
+    'pb': 0,
+    'beef * pb': 0
+    }))
+
+print(regressor.predict({
+    'beef': 12,
     'pb': 0,
     'beef * pb': 0
     }))
