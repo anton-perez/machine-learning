@@ -85,3 +85,26 @@ class DataFrame:
     new_dict[new_key] = [new_dict[col_1][i]*new_dict[col_2][i] for i in range(len(new_dict[col_1]))]
 
     return DataFrame(new_dict, new_columns)
+  
+  def create_dummy_variables(self, column):
+    new_dict = self.data_dict.copy()
+    dummy_col = new_dict[column]
+    new_dict.pop(column)
+    dummy_vars = []
+    for var_list in dummy_col:
+      for var in var_list:
+        if var not in new_dict:
+          new_dict[var] = []
+          dummy_vars.append(var)
+
+    for dummy_var in dummy_vars:
+      for var_list in dummy_col:
+        if dummy_var in var_list:
+          new_dict[dummy_var].append(1)
+        else:
+          new_dict[dummy_var].append(0)
+
+    col_index = self.columns.index(column)    
+    new_columns = self.columns[:col_index] + dummy_vars + self.columns[col_index + 1:]
+
+    return DataFrame(new_dict, new_columns)
