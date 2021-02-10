@@ -24,6 +24,11 @@ class LogisticRegressor:
   def predict(self, input_dict):
     sum = self.coefficients['constant']
     for var in self.independent_variables:
-      sum += self.coefficients[var]*input_dict[var]
-    sigmoid = self.upper_bound/(1+math.e**sum)
+      if var in input_dict:
+        sum += self.coefficients[var]*input_dict[var]
+      elif ' * ' in var:
+        vars = var.split(' * ')
+        if vars[0] in input_dict and vars[1] in input_dict:
+          sum += self.coefficients[var]*input_dict[vars[0]]*input_dict[vars[1]]
+    sigmoid = self.upper_bound/(1+math.exp(sum))
     return sigmoid
