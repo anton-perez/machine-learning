@@ -147,10 +147,11 @@ class Matrix:
     reduced_augmented_matrix = augmented_matrix.rref()
     inverted_matrix = reduced_augmented_matrix.get_columns([i+self.num_cols for i in range(self.num_cols)])
     reduced_matrix = reduced_augmented_matrix.get_columns([i for i in range(self.num_cols)])
-
+    
+    rounded_elements = [[round(element,10) for element in row] for row in reduced_matrix.elements]
     if self.num_rows != self.num_cols:
       return "Error: cannot invert a non-square matrix"
-    elif reduced_matrix.elements != identity_matrix.elements:
+    elif rounded_elements != identity_matrix.elements:
       return "Error: cannot invert a singular matrix"
     else:
       return inverted_matrix  

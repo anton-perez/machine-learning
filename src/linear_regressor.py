@@ -18,7 +18,6 @@ class LinearRegressor:
       coeff_mat = Matrix([[1] for _ in range(len(data[self.dependent_variable]))]).augment(Matrix(indep_coeff).transpose())
     else:
       coeff_mat = Matrix([[1] for _ in range(len(data[self.dependent_variable]))])
-      
     psuedo = coeff_mat.transpose()@coeff_mat
     final_coeff = psuedo.inverse()@(coeff_mat.transpose()@dependent) 
     dict_keys = ['constant'] + self.independent_variables
