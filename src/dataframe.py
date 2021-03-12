@@ -70,12 +70,14 @@ class DataFrame:
     return DataFrame.from_array(new_arr, self.columns)
 
   @classmethod
-  def from_csv(cls, path_to_csv, header=True):
+  def from_csv(cls, path_to_csv, data_types, parser, header=True):
     with open(path_to_csv, "r") as file:
       str_arr = [i.split(',  ') for i in file.read().split('\n')]
-      columns = str_arr[0][0].split(', ')
-      str_arr = [row for row in str_arr[1:] if row != ['']]
-    return cls.from_array(str_arr, columns)
+      columns = parser(str_arr[0][0].split(', ')[0])
+      parsed_str_arr = [parser(row[0]) for row in str_arr[1:] if row != ['']]
+      data_str_arr = [[data_types[columns[i]](row[i]) if row[i] != '' else None for i in range(len(columns))] for row in parsed_str_arr]
+      
+    return cls.from_array(data_str_arr, columns)
 
   def create_interaction_terms(self, col_1, col_2):
     new_dict = self.data_dict.copy()

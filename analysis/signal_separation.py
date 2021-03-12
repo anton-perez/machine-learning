@@ -47,6 +47,6 @@ plt.plot(
 
 plt.plot(
   [x/1000 for x in range(5001)], 
-  [signal_regressor.predict({'sin(x)': math.sin(x), 'cos(x)': math.cos(x), 'sin(2x)': math.sin(2*x), 'cos(2x)': math.cos(2*x)}) for x in range(5001)])
+  [signal_regressor.predict({'sin(x)': math.sin(x/1000), 'cos(x)': math.cos(x/1000), 'sin(2x)': math.sin(2*x/1000), 'cos(2x)': math.cos(2*x/1000)}) for x in range(5001)])
 
 plt.savefig('signal.png')
