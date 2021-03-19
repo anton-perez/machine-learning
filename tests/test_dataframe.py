@@ -274,3 +274,18 @@ assert df.group_by('name').aggregate('score', 'avg').to_array() == [
     ['Sylvia Mendez', [52, 53, 54], 90],
 ]
 print('PASSED')
+
+df = DataFrame.from_array(
+    [['Kevin', 'Fray', 5],
+    ['Charles', 'Trapp', 17],
+    ['Anna', 'Smith', 13],
+    ['Sylvia', 'Mendez', 9]],
+    columns = ['firstname', 'lastname', 'age']
+)
+
+print('Testing query...')
+assert df.query('SELECT firstname, age').to_array() == [['Kevin', 5],
+['Charles', 17],
+['Anna', 13],
+['Sylvia', 9]]
+print('PASSED')

@@ -144,5 +144,11 @@ class DataFrame:
 
     return DataFrame(new_data, self.columns)
       
+  def query(self, query_string):
+    query_list = [string.replace(',','') for string in query_string.split(' ')]
+    if 'SELECT' in query_list:
+      new_columns = query_list[query_list.index('SELECT')+1:]
+    return self.select(new_columns)
+
 
         
