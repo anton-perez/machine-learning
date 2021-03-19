@@ -15,7 +15,7 @@ class DataFrame:
 
     return data_array
 
-  def select_columns(self, selected_columns):
+  def select(self, selected_columns):
     new_dict = {key:self.data_dict[key] for key in selected_columns}
     return DataFrame(new_dict, selected_columns)
 
@@ -40,7 +40,7 @@ class DataFrame:
   def array_row_to_dict(self, row):
     return {self.columns[i]:row[i] for i in range(len(row))}
 
-  def select_rows_where(self, condition):
+  def where(self, condition):
     arr = self.to_array()
     selected_rows = []
     for row in arr:
@@ -50,7 +50,7 @@ class DataFrame:
     
     return DataFrame.from_array(selected_rows, self.columns)
 
-  def order_by(self, key, ascending):
+  def order_by(self, key, ascending=True):
     arr = self.to_array()
     new_arr = []
     for iterations in range(len(arr)):
@@ -110,3 +110,39 @@ class DataFrame:
     new_columns = self.columns[:col_index] + dummy_vars + self.columns[col_index + 1:]
 
     return DataFrame(new_dict, new_columns)
+
+  def group_by(self, column):
+    already_seen = []
+    new_arr = []
+    for i in range(len(self.data_dict[column])):
+      old_row = self.select_rows([i]).to_array()[0]
+      if self.data_dict[column][i] in already_seen:
+        for row in new_arr:
+          if self.data_dict[column][i] in row:
+            for j in range(len(row)):
+              if row[j] != self.data_dict[column][i]:
+                row[j].append(old_row[j])
+      else:
+        already_seen.append(self.data_dict[column][i])
+        new_row = [[var] if var != self.data_dict[column][i] else var for var in old_row]
+        new_arr.append(new_row)
+
+    return DataFrame.from_array(new_arr, self.columns)
+
+  def aggregate(self, column, how):
+    new_data = self.data_dict.copy()
+    if how == 'count':
+      new_data[column] = [len(group) for group in new_data[column]] 
+    if how == 'max':
+      new_data[column] = [max(group) for group in new_data[column]]
+    if how == 'min':
+      new_data[column] = [min(group) for group in new_data[column]]
+    if how == 'sum':
+      new_data[column] = [sum(group) for group in new_data[column]]
+    if how == 'avg':
+      new_data[column] = [sum(group)/len(group) for group in new_data[column]]
+
+    return DataFrame(new_data, self.columns)
+      
+
+        

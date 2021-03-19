@@ -28,7 +28,7 @@ assert df1.to_array() == [[1, 2, 3],
  [0, 2, 0]]
 print('PASSED')
 
-df2 = df1.select_columns(['Sarah', 'Pete'])
+df2 = df1.select(['Sarah', 'Pete'])
 
 print('Testing method "select_columns"...')
 assert df2.to_array() == [[3, 1],
@@ -68,7 +68,7 @@ arr = [['Kevin', 'Fray', 5],
 df = DataFrame.from_array(arr, columns)
 
 print('Testing method "select_rows_where"...')
-assert df.select_rows_where(
+assert df.where(
     lambda row: len(row['firstname']) >= len(row['lastname']) and row['age'] > 10
     ).to_array() == [['Charles', 'Trapp', 17]]
 print('PASSED')
@@ -85,25 +85,25 @@ assert df.order_by('firstname', ascending=False).to_array() == [['Sylvia', 'Mend
 ['Anna', 'Smith', 13]]
 print('PASSED')
 
-path_to_datasets = '/home/runner/machine-learning/datasets/'
-filename = 'airtravel.csv' 
-filepath = path_to_datasets + filename
-df = DataFrame.from_csv(filepath, header=True)
-print('Testing classmethod from_csv...')
-assert df.columns == ['"Month"', '"1958"', '"1959"', '"1960"']
-assert df.to_array() == [['"JAN"',  '340',  '360',  '417'],
-['"FEB"',  '318',  '342',  '391'],
-['"MAR"',  '362',  '406',  '419'],
-['"APR"',  '348',  '396',  '461'],
-['"MAY"',  '363',  '420',  '472'],
-['"JUN"',  '435',  '472',  '535'],
-['"JUL"',  '491',  '548',  '622'],
-['"AUG"',  '505',  '559',  '606'],
-['"SEP"',  '404',  '463',  '508'],
-['"OCT"',  '359',  '407',  '461'],
-['"NOV"',  '310',  '362',  '390'],
-['"DEC"',  '337',  '405',  '432']]
-print('PASSED')
+# path_to_datasets = '/home/runner/machine-learning/datasets/'
+# filename = 'airtravel.csv' 
+# filepath = path_to_datasets + filename
+# df = DataFrame.from_csv(filepath, header=True)
+# print('Testing classmethod from_csv...')
+# assert df.columns == ['"Month"', '"1958"', '"1959"', '"1960"']
+# assert df.to_array() == [['"JAN"',  '340',  '360',  '417'],
+# ['"FEB"',  '318',  '342',  '391'],
+# ['"MAR"',  '362',  '406',  '419'],
+# ['"APR"',  '348',  '396',  '461'],
+# ['"MAY"',  '363',  '420',  '472'],
+# ['"JUN"',  '435',  '472',  '535'],
+# ['"JUL"',  '491',  '548',  '622'],
+# ['"AUG"',  '505',  '559',  '606'],
+# ['"SEP"',  '404',  '463',  '508'],
+# ['"OCT"',  '359',  '407',  '461'],
+# ['"NOV"',  '310',  '362',  '390'],
+# ['"DEC"',  '337',  '405',  '432']]
+# print('PASSED')
 
 df = DataFrame.from_array(
     [[0, 0, 1], 
@@ -178,4 +178,99 @@ assert df.to_array() == [[0, 0, 0, 0, 1],
 [5, 5, 1, 0, 0],
 [5, 5, 0, 1, 0],
 [5, 5, 1, 1, 0]]
+print('PASSED')
+
+#dataframe primatives
+
+df = DataFrame.from_array(
+    [['Kevin', 'Fray', 5],
+    ['Charles', 'Trapp', 17],
+    ['Anna', 'Smith', 13],
+    ['Sylvia', 'Mendez', 9]],
+    columns = ['firstname', 'lastname', 'age']
+)
+
+print('Testing previously implemented primatives...')
+assert df.select(['firstname','age']).to_array() == [['Kevin', 5],
+['Charles', 17],
+['Anna', 13],
+['Sylvia', 9]]
+
+assert df.where(lambda row: row['age'] > 10).to_array() == [['Charles', 'Trapp', 17],
+['Anna', 'Smith', 13]]
+
+assert df.order_by('firstname').to_array() == [['Anna', 'Smith', 13],
+['Charles', 'Trapp', 17],
+['Kevin', 'Fray', 5],
+['Sylvia', 'Mendez', 9]]
+
+assert df.order_by('firstname', ascending=False).to_array() == [['Sylvia', 'Mendez', 9],
+['Kevin', 'Fray', 5],
+['Charles', 'Trapp', 17],
+['Anna', 'Smith', 13]]
+
+assert df.select(['firstname','age']).where(lambda row: row['age'] > 10).order_by('age').to_array() == [['Anna', 13],
+['Charles', 17]]
+print('PASSED')
+
+df = DataFrame.from_array(
+    [
+        ['Kevin Fray', 52, 100],
+        ['Charles Trapp', 52, 75],
+        ['Anna Smith', 52, 50],
+        ['Sylvia Mendez', 52, 100],
+        ['Kevin Fray', 53, 80],
+        ['Charles Trapp', 53, 95],
+        ['Anna Smith', 53, 70],
+        ['Sylvia Mendez', 53, 90],
+        ['Anna Smith', 54, 90],
+        ['Sylvia Mendez', 54, 80],
+    ],
+    columns = ['name', 'assignmentId', 'score']
+)
+
+print('Testing primative group_by...')
+assert df.group_by('name').to_array() == [
+    ['Kevin Fray', [52, 53], [100, 80]],
+    ['Charles Trapp', [52, 53], [75, 95]],
+    ['Anna Smith', [52, 53, 54], [50, 70, 90]],
+    ['Sylvia Mendez', [52, 53, 54], [100, 90, 80]],
+]
+print('PASSED')
+
+print('Testing primative aggregate...')
+assert df.group_by('name').aggregate('score', 'count').to_array() == [
+    ['Kevin Fray', [52, 53], 2],
+    ['Charles Trapp', [52, 53], 2],
+    ['Anna Smith', [52, 53, 54], 3],
+    ['Sylvia Mendez', [52, 53, 54], 3],
+]
+
+assert df.group_by('name').aggregate('score', 'max').to_array() == [
+    ['Kevin Fray', [52, 53], 100],
+    ['Charles Trapp', [52, 53], 95],
+    ['Anna Smith', [52, 53, 54], 90],
+    ['Sylvia Mendez', [52, 53, 54], 100],
+]
+
+assert df.group_by('name').aggregate('score', 'min').to_array() == [
+    ['Kevin Fray', [52, 53], 80],
+    ['Charles Trapp', [52, 53], 75],
+    ['Anna Smith', [52, 53, 54], 50],
+    ['Sylvia Mendez', [52, 53, 54], 80],
+]
+
+assert df.group_by('name').aggregate('score', 'sum').to_array() == [
+    ['Kevin Fray', [52, 53], 180],
+    ['Charles Trapp', [52, 53], 170],
+    ['Anna Smith', [52, 53, 54], 210],
+    ['Sylvia Mendez', [52, 53, 54], 270],
+]
+
+assert df.group_by('name').aggregate('score', 'avg').to_array() == [
+    ['Kevin Fray', [52, 53], 90],
+    ['Charles Trapp', [52, 53], 85],
+    ['Anna Smith', [52, 53, 54], 70],
+    ['Sylvia Mendez', [52, 53, 54], 90],
+]
 print('PASSED')
