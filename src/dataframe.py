@@ -50,7 +50,8 @@ class DataFrame:
     
     return DataFrame.from_array(selected_rows, self.columns)
 
-  def order_by(self, key, ascending=True):
+  def order_by(self, key, order = 'ASC'):
+    ascending = True if order == 'ASC' else False
     arr = self.to_array()
     new_arr = []
     for iterations in range(len(arr)):
@@ -124,7 +125,7 @@ class DataFrame:
                 row[j].append(old_row[j])
       else:
         already_seen.append(self.data_dict[column][i])
-        new_row = [[var] if var != self.data_dict[column][i] else var for var in old_row]
+        new_row = [[old_row[j]] if j != self.columns.index(column) else old_row[j] for j in range(len(old_row))]
         new_arr.append(new_row)
 
     return DataFrame.from_array(new_arr, self.columns)
@@ -145,10 +146,30 @@ class DataFrame:
     return DataFrame(new_data, self.columns)
       
   def query(self, query_string):
-    query_list = [string.replace(',','') for string in query_string.split(' ')]
-    if 'SELECT' in query_list:
-      new_columns = query_list[query_list.index('SELECT')+1:]
-    return self.select(new_columns)
+    query_string = query_string.replace('ORDER BY', 'ORDERBY')
+    operations = ['SELECT', 'ORDERBY']
+    query_list = query_string.split(' ')
+ 
+    query_lines = []
+    query_line = []
+    for word in query_list:
+      if word in operations:
+        if query_line != []:
+          query_lines.append(query_line)
+        query_line = [word]
+      else:
+        query_line.append(word)  
+    query_lines.append(query_line)
 
+    query_lines = query_lines[::-1]
+    df = DataFrame(self.data_dict, self.columns)
+    for line in query_lines:
+      if 'SELECT' in line:
+        new_columns = [string.replace(',','') for string in line[line.index('SELECT')+1:]]
+        df = df.select(new_columns)
+      elif 'ORDERBY' in line:
+        orders = [string.replace(',','') for string in line[line.index('ORDERBY')+1:]][::-1]
+        for order_num in range(0, len(orders), 2):
+          df = df.order_by(orders[order_num+1], orders[order_num])
+    return df
 
-        

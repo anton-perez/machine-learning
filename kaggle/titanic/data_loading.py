@@ -59,7 +59,7 @@ df.data_dict['CabinNumber'] = cabin_numbers
 
 df.columns = new_columns
 
-df = df.select_columns(new_columns)
+df = df.select(new_columns)
 
 def represents_int(s):
   try: 
@@ -96,7 +96,7 @@ df.data_dict['TicketNumber'] = ticket_numbers
 
 df.columns = new_columns
 
-df = df.select_columns(new_columns)
+df = df.select(new_columns)
 
 print('Testing columns with subvariables...')
 assert df.columns == ["PassengerId", "Survived", "Pclass", "Surname", "Sex", "Age", "SibSp", "Parch", "TicketType", "TicketNumber", "Fare", "CabinType", "CabinNumber", "Embarked"]
@@ -109,3 +109,45 @@ assert df.to_array()[:5] == [[1, 0, 3, "Braund", "male", 22.0, 1, 0, "A/5", 2117
 [4, 1, 1, "Futrelle", "female", 35.0, 1, 0, None, 113803, 53.1, "C", 123, "S"],
 [5, 0, 3, "Allen", "male", 35.0, 0, 0, None, 373450, 8.05, None, None, "S"]]
 print('PASSED')
+
+pclass_df = df.select(['Pclass', 'Survived'])
+pclass_df = pclass_df.group_by('Pclass')
+print('Pclass survival rate:')
+print(pclass_df.aggregate('Survived', 'avg').to_array())
+print('Pclass survival count:')
+print(pclass_df.aggregate('Survived', 'count').to_array())
+
+sex_df = df.select(['Sex', 'Survived'])
+sex_df = sex_df.group_by('Sex')
+print('Sex survival rate:')
+print(sex_df.aggregate('Survived', 'avg').to_array())
+print('Sex survival count:')
+print(sex_df.aggregate('Survived', 'count').to_array())
+
+sib_df = df.select(['SibSp', 'Survived'])
+sib_df = sib_df.group_by('SibSp')
+print('SibSp survival rate:')
+print(sib_df.aggregate('Survived', 'avg').to_array())
+print('SibSp survival count:')
+print(sib_df.aggregate('Survived', 'count').to_array())
+
+parch_df = df.select(['Parch', 'Survived'])
+parch_df = parch_df.group_by('Parch')
+print('Parch survival rate:')
+print(parch_df.aggregate('Survived', 'avg').to_array())
+print('Parch survival count:')
+print(parch_df.aggregate('Survived', 'count').to_array())
+
+cabin_df = df.select(['CabinType', 'Survived'])
+cabin_df = cabin_df.group_by('CabinType')
+print('CabinType survival rate:')
+print(cabin_df.aggregate('Survived', 'avg').to_array())
+print('CabinType survival count:')
+print(cabin_df.aggregate('Survived', 'count').to_array())
+
+embark_df = df.select(['Embarked', 'Survived'])
+embark_df = embark_df.group_by('Embarked')
+print('Embarked survival rate:')
+print(embark_df.aggregate('Survived', 'avg').to_array())
+print('Embarked survival count:')
+print(embark_df.aggregate('Survived', 'count').to_array())
