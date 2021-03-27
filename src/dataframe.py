@@ -130,6 +130,23 @@ class DataFrame:
 
     return DataFrame.from_array(new_arr, self.columns)
 
+  def group_by_interval(self, column, intervals):
+    new_arr = [[[] if i != self.columns.index(column) else interval for i in range(len(self.columns))] for interval in intervals]
+    for i in range(len(self.data_dict[column])):
+      if self.data_dict[column][i] != None:
+        old_row = self.select_rows([i]).to_array()[0]
+        for (a, b) in intervals:
+          if self.data_dict[column][i] >= a and self.data_dict[column][i] < b:
+            interval = (a,b)
+
+        for row in new_arr:
+          if interval in row:
+            for j in range(len(row)):
+              if j != self.columns.index(column):
+                row[j].append(old_row[j])
+
+    return DataFrame.from_array(new_arr, self.columns)
+
   def aggregate(self, column, how):
     new_data = self.data_dict.copy()
     if how == 'count':
