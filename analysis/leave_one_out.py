@@ -35,12 +35,10 @@ def leave_one_out_cross_validation_accuracy(df, dependent_variable, k):
     dependent_df = df[dependent_variable]
 
     left_out = independent_df.iloc[[i]].to_numpy().tolist()[0]
-    actual_classification = df[dependent_variable].iloc[[i]].to_numpy().tolist()[0]
+    actual_classification = dependent_df.iloc[[i]].to_numpy().tolist()[0]
 
-    independent_df = independent_df.drop([i])
-    independent = independent_df.reset_index(drop=True).to_numpy().tolist()
-    dependent_df = dependent_df.drop([i])
-    dependent = dependent_df.reset_index(drop=True).to_numpy().tolist()
+    independent = independent_df.drop([i]).reset_index(drop=True).to_numpy().tolist()
+    dependent = dependent_df.drop([i]).reset_index(drop=True).to_numpy().tolist()
     
     knn = knearestclass(n_neighbors=k)
     knn = knn.fit(independent, dependent)
